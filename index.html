@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="http://userpages.umbc.edu/~justins3/CMSC433/proj1/cmsc433project1/" target="_blank">
+    <script src="addInput.js" language "Javascript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <form action="placeholder.php" method="post">
+    First Name: 
+    <input type="text" name="firstname" required>
+    Last Name: 
+    <input type="text" name="lastname" required>
+    <br / >
+    Email: 
+    <input type="text" name="email" required>
+    <br / >
+    University ID: 
+    <input type="text" name="ID" required>
+    <br / >
+    <input type="button" onclick="addInput()"/>
+    <span id="responce"></span>
+    <div id="dynamicInput">
+      Class 1<br><input type="text" name="myInputs]">
+    </div>
+    <input type="button" value="Add another class" 
+      onClick="addInput('dynamicInput');">
+    <input type="submit" value="submit">
+    </form>
+  </body>
+
+</html>
