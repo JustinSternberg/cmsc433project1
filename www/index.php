@@ -61,11 +61,11 @@ $errorMessage = "";
 				<p>
 				UMBC ID:&nbsp;&nbsp;<input class="loginInput" type="text" id="studentID" name="studentID" value="<?php echo $studentID; ?>" placeholder="AAXXXXX   A=char X=digit" maxlength="7" size="30" pattern="[A-Za-z]{2}[0-9]{5}" required autofocus />
 				</p><p>
-				Firstname:&nbsp;&nbsp;<input class="loginInput" type="text" id="firstname" name="firstname" value="<?php echo $firstname; ?>" placeholder="First name" maxlength="50" pattern="^[A-Za-z][-\s\w\d.']+" size="30" required />
+				Firstname:&nbsp;&nbsp;<input class="loginInput" type="text" id="firstname" name="firstname" value="<?php echo $firstname; ?>" placeholder="First name" maxlength="50" pattern="^[\w][\-\s\w\d\.']*" size="30" required />
 				</p><p>
-				Lastname:&nbsp;&nbsp;<input class="loginInput" type="text" id="lastname" name="lastname" value="<?php echo $lastname; ?>" placeholder="Last name" maxlength="50" pattern="^[A-Za-z][-\s\w\d.']+" size="30" required />
+				Lastname:&nbsp;&nbsp;<input class="loginInput" type="text" id="lastname" name="lastname" value="<?php echo $lastname; ?>" placeholder="Last name" maxlength="50" pattern="^[\w][-\s\w\d\.']*" size="30" required />
 				</p><p>
-				Email:&nbsp;&nbsp;<input class="loginInput" type="text" id="email" name="email" value="<?php echo $email; ?>" placeholder="Email address" pattern="^[\w\d.]+@[\w\d]+.[\w\d]+" size="30" required />
+				Email:&nbsp;&nbsp;<input class="loginInput" type="text" id="email" name="email" value="<?php echo $email; ?>" placeholder="Email address" pattern="^[\w\d\-]+\.?[\w\d\-]*@[\w\d\.\-]+\.[\w\d]+" size="30" required />
 				</p><p>
 				Phone:&nbsp;&nbsp;<input class="loginInput" type="text" id="phone" name="phone" value="<?php echo $phone; ?>" placeholder="XXX-XXX-XXXX" maxlength="12" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}" size="30" required />
 				</p><br/>
@@ -75,6 +75,9 @@ $errorMessage = "";
 			<script>
 				document.querySelector("#studentID").addEventListener("keyup", getStudentInfo);
 				document.querySelector("#phone").addEventListener("keyup", formatPhone);
+				document.querySelector("#firstname").addEventListener("keyup", formatName);
+				document.querySelector("#lastname").addEventListener("keyup", formatName);
+				document.querySelector("#email").addEventListener("keyup", formatEmail);
 			</script>
 		</div>
 	</div>

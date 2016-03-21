@@ -1,12 +1,27 @@
 
 	function getStudentInfo() {
 		var studentID = document.querySelector("#studentID").value;
+		studentID = (studentID.toUpperCase()).trim();
+		var newValue = "";
+		for (var i=0; i < studentID.length; i++) {
+			if(i == 0 || i == 1) {
+				if( studentID[i].match(/[A-Za-z]/)) {
+					newValue += studentID[i];
+				}
+			}
+			else {
+				if( studentID[i].match(/[0-9]/)) {
+					newValue += studentID[i];
+				}
+			}
+		}
+		studentID = newValue;
+		document.querySelector("#studentID").value = studentID;
 		var firstname = document.querySelector("#firstname");
 		var lastname = document.querySelector("#lastname");
 		var email = document.querySelector("#email");
 		var phone = document.querySelector("#phone");
 		var searchResults = document.querySelector("#courseResults");
-		studentID = (studentID.toUpperCase()).trim();
 		// only run if student id's length is 7
 		if(studentID.length == 7) {
 			// url address of the php page that provides JSON data
@@ -30,6 +45,19 @@
 			}
 			xhr.send(null);
 		}
+	}
+	function formatName() {
+		var name = this.value;
+		var newName = "";
+		for(var i=0; i < name.length; i++) {
+			if(name[i].match(/[\w\d\s\.'\-]/)) {
+				newName += name[i];
+			}
+		}
+		this.value = newName;
+	}
+	function formatEmail() {
+		
 	}
 	function formatPhone() {
 		var phone = document.querySelector("#phone").value;

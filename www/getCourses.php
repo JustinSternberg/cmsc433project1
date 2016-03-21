@@ -15,7 +15,6 @@ $studentID = $tempArray[0];
 		// only run this is the search box is not empty
 		if(searchValue.value.length > 0) {
 			searchValue.value = ((searchValue.value).toUpperCase()).trim();
-			searchResults.innerHTML = "";
 			// url address of the php page that provides JSON data
 			var courseSearchURL = "./courses.php?course=" + searchValue.value;
 			// make a same orogin XMLHttpRequest to get the list of courses
@@ -28,11 +27,14 @@ $studentID = $tempArray[0];
 				// convert it to an array that we can manipulate
 				var jsonParsed = JSON.parse(resp);
 				// make a list of the results
+				var newValue = "";
 				for (var i=0; i < jsonParsed.length; i++) {
-					searchResults.insertAdjacentHTML('afterbegin',"<a title=\"" + jsonParsed[i][0] + " - " + jsonParsed[i][1] + "&#10;&#10;" +
+					newValue += "<a title=\"" + jsonParsed[i][0] + " - " + jsonParsed[i][1] + "&#10;&#10;" +
 						jsonParsed[i][2] + "\" href=\"./process.php?studentID=<?php echo $studentID;  ?>&courseSearch=" + searchValue.value + "&course=" + jsonParsed[i][0] + "&pr=1\" >" +
-						jsonParsed[i][0] + " - " + jsonParsed[i][1] +  "</a>");
+						jsonParsed[i][0] + " - " + jsonParsed[i][1] +  "</a>";
+						
 				}
+				searchResults.innerHTML = newValue;
 			}
 			xhr.send(null);
 			searchResults.innerHTML = newDropDown;
@@ -40,5 +42,33 @@ $studentID = $tempArray[0];
 		}
 		else {
 			document.getElementById("courseResult").classList.remove("show");
+		}
+	}
+	function display() {
+		var course = this.id;
+		var divOut = document.querySelector("#div" + course);
+		if (divOut.innerHTML != "") {
+			divOut.innerHTML = "";
+		}
+		else {
+			var courseSearchURL = "./courses.php?course=" + course;
+			// make a same orogin XMLHttpRequest to get the list of courses
+			var xhr = new XMLHttpRequest();
+			// GET Method is being used
+			xhr.open("GET", courseSearchURL, true);
+			xhr.onload = function() {
+				// store the webpage's response. The search result of database query
+				var resp = xhr.responseText;
+				// convert it to an array that we can manipulate
+				var jsonParsed = JSON.parse(resp);
+				// make a list of the results
+				if(jsonParsed.length > 0) {
+					divOut.insertAdjacentHTML('afterbegin', "<br/>" + jsonParsed[0][0] + " - " + jsonParsed[0][1] + "<br/><br/>" + jsonParsed[0][2] + 
+					"<br/><br/>Requirements: " +  jsonParsed[0][3] + 
+					"<br/><br/><a href=\"./process.php?studentID=<?php echo $studentID;  ?>&course=" + course + "&pr=1\" ><input type=\"button\"class=\"addIt\"  value=\"Add it\" /></a><br/><br/>"
+					);
+				}
+			}
+			xhr.send(null);
 		}
 	}

@@ -13,15 +13,18 @@ if(!empty($_GET["studentid"])) {
 echo "[";
 if (strlen($studentid) == 7) {
 	$sql = "SELECT studentid, firstname, lastname, email, phone FROM students WHERE studentid = '" . $studentid . "' ";
-	$result = $conn->query($sql);
-	if ($result->num_rows > 0) {
+	//$result = $conn->query($sql);
+	$result = mysql_query($sql);
+	if (mysql_num_rows($result) > 0) {
 		// output data of each row
-		while($row = $result->fetch_assoc()) {
+		//while($row = $result->fetch_assoc()) {
+		while($row = mysql_fetch_assoc($result)) {
 			echo "\"" . $row["studentid"] . "\",\"" . $row["firstname"] . "\",\"" . $row["lastname"] . "\",\"" . $row["email"] . "\",\"" . $row["phone"] . "\"";
 		}
 	}
 }
 echo "]";
 // close the connection
-$conn->close();
+//$conn->close();
+mysql_close($conn);
 ?>
