@@ -1,13 +1,13 @@
 <?php
 // get functions
-require "projectFunctions.php";
+//require "projectFunctions.php";
 // retrieve the get/post HTTP method requests
-$tempArray = studentInfo();
-$studentID = $tempArray[0];
+//$tempArray = studentInfo();
+//$studentID = $tempArray[0];
 
 ?>
 	function getCourses() {
-		var searchValue = document.querySelector("#courseSearch");
+		var searchValue = document.querySelector("#course");
 		var searchResults = document.querySelector("#courseResult");
 		// clear the unordered list everytime the keyboard is pressed
 		searchResults.innerHTML = "";
@@ -29,8 +29,11 @@ $studentID = $tempArray[0];
 				// make a list of the results
 				var newValue = "";
 				for (var i=0; i < jsonParsed.length; i++) {
-					newValue += "<a title=\"" + jsonParsed[i][0] + " - " + jsonParsed[i][1] + "&#10;&#10;" +
-						jsonParsed[i][2] + "\" href=\"./process.php?studentID=<?php echo $studentID;  ?>&courseSearch=" + searchValue.value + "&course=" + jsonParsed[i][0] + "&pr=1\" >" +
+					newValue += "<a title=\"" + jsonParsed[i][0] + " - " + jsonParsed[i][1] + "&#10;&#10;" + jsonParsed[i][2];
+					if((jsonParsed[i][3]).trim() != "") {
+						newValue += "&#10;&#10;Requirements: " + jsonParsed[i][3];
+					}
+					newValue += "\" href=\"./index.php?course=" + jsonParsed[i][0] + "&pr=1\" >" +
 						jsonParsed[i][0] + " - " + jsonParsed[i][1] +  "</a>";
 						
 				}
@@ -63,9 +66,12 @@ $studentID = $tempArray[0];
 				var jsonParsed = JSON.parse(resp);
 				// make a list of the results
 				if(jsonParsed.length > 0) {
-					divOut.insertAdjacentHTML('afterbegin', "<br/>" + jsonParsed[0][0] + " - " + jsonParsed[0][1] + "<br/><br/>" + jsonParsed[0][2] + 
-					"<br/><br/>Requirements: " +  jsonParsed[0][3] + 
-					"<br/><br/><a href=\"./process.php?studentID=<?php echo $studentID;  ?>&course=" + course + "&pr=1\" ><input type=\"button\"class=\"addIt\"  value=\"Add it\" /></a><br/><br/>"
+					var newValue = jsonParsed[0][0] + " - " + jsonParsed[0][1] + "<br/><br/>" + jsonParsed[0][2];
+					if((jsonParsed[0][3]).trim() != "") {
+						newValue += "<br/><br/>Requirements: " +  jsonParsed[0][3];
+					}
+					divOut.insertAdjacentHTML('afterbegin', "<br/>" + newValue +
+					"<br/><br/><a href=\"./index.php?course=" + course + "&pr=1\" ><input type=\"button\"class=\"addIt\"  value=\"Add it\" /></a><br/><br/>"
 					);
 				}
 			}

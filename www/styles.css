@@ -3,7 +3,8 @@
 		margin: 0px;
 		padding: 0px;
 		background-color: #ffffff;
-	}
+		background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTAxNzRCQjg1NDE1MTFFMUFDMURBRjU5QjZDQkEzOUQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTAxNzRCQjk1NDE1MTFFMUFDMURBRjU5QjZDQkEzOUQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1MDE3NEJCNjU0MTUxMUUxQUMxREFGNTlCNkNCQTM5RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1MDE3NEJCNzU0MTUxMUUxQUMxREFGNTlCNkNCQTM5RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pvd16nsAAAAsSURBVHjaYvz//z8DNsACod6/fw8kBQUF4WxGXDqY3oMBXB+czUgHOwACDACKXi4HGGnT1AAAAABJRU5ErkJggg%3D%3D');
+	}	
 	a:link, a:visited, a:active, a:hover {
 		text-decoration: none;
 		color: #ffcc00;
@@ -30,34 +31,41 @@
 	}
 	.errorMessage {
 		color: red;
-		width: 500px;
+		width: 620px;
 		font-weight: bold;
 		word-wrap: break-word;
 		font-size: 20px;
+		text-align: center;
+		margin: auto;
 	}
 	.wrapper {
 		width: 100%;
-		height: 100%;
-		margin: 0 auto;
+		// height: 100%;
+		margin: auto;
+		text-align: center;
 	}
 	.mainBody {
 		color: #000000;
-		width: 850px;
+		width: 1050px;
 		height: 100%;
 		float: left;
 		padding: 10px;
 		display: inline-block;
+		border: 3px solid silver;
 		font-weight: bold;
 		text-align: left;
 		background-color: #ffffff;
 		z-index: -1;
+		text-align: center;
 	}
 	.sidebar {
-		width: 210px;
+		width: 410px;
 		float: left;
 	}
 	.studentDetails {
+		width: 640px;
 		float: left;
+		font-size: 20px;
 	}
 	.headercss {
 		width: 100%;
@@ -75,7 +83,7 @@
 		position: fixed;
 	}
 	.headernav {
-		width: 850px;
+		width: 1050px;
 	}
 	.searchBar {
 		background-color: #ffcc00;
@@ -117,12 +125,17 @@
 	.show {
 		display:block;
 	}
+	.logout {
+		text-align:left;
+		vertical-align: top;
+	}
 	.progress {
 		width: 350px;   
 		border: 1px solid black;
 		position: relative;
 		padding: 0px;
 		background-color: black;
+		margin: auto;
 	}
 	.percent {
 		color: white;
@@ -138,12 +151,12 @@
 	.divButton {
 		background-color: #ffcc00;
 		color: #000000;
-		width: 200px;
-		height: 30px;
+		width: 400px;
+		height: 35px;
 		border: 1px solid black;
 		cursor: pointer;
 		font-weight: bold;
-		font-size: 25px;
+		font-size: 15px;
 		text-align: center;
 	}
 	.divButton:hover {
@@ -153,13 +166,13 @@
 	.divInfo {
 		background-color: silver;
 		color: #000000;
-		width: 200px;
+		width: 400px;
 		border: 1px solid black;
 		font-size: 12px;
 		text-align: center;
 	}
 	.recommendedLabel {
-		width: 200px;
+		width: 400px;
 		background-color: #000000;
 		color: #ffcc00;
 		font-weight: bold;
@@ -179,4 +192,15 @@
 	.addIt:hover {
 		background-color: #ffcc00;
 		color: #000000;
+	}
+	.courseTable {
+		font-size: 20px;
+		background-color: silver;
+		border: 3px solid #000000;
+		font-weight:  bold;
+		margin: auto;
+	}
+	.footer {
+		text-align: center;
+		vertical-align: bottom;
 	}

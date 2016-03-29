@@ -33,6 +33,5 @@ if (strlen($course) > 0 ) {
 }
 echo "]";
 // close the connection
-//$conn->close();
 mysql_close($conn);
 ?>
