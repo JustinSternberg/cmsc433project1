@@ -25,7 +25,7 @@
 		// only run if student id's length is 7
 		if(studentID.length == 7) {
 			// url address of the php page that provides JSON data
-			var studentSearchURL = "./students.php?studentid=" + studentID;
+			var studentSearchURL = "./students.php?studentID=" + studentID;
 			// make a same orogin XMLHttpRequest to get the list of courses
 			var xhr = new XMLHttpRequest();
 			// GET Method is being used

@@ -2,9 +2,9 @@
 
 $hostname = "studentdb-maria.gl.umbc.edu";
 //$hostname = "localhost";
-$database = "database";
-$username = "username";
-$password = "password";
+$database = "jguansi1";
+$username = "jguansi1";
+$password = "cmsc433";
 
 // Create connection
 //$conn = new mysqli($hostname, $username, $password, $database);

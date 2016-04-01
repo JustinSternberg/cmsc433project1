@@ -5,14 +5,14 @@ function studentInfo() {
 	if($_POST) {
 		$_GET = $_POST;
 	}
-	$returnValue = array("", "", "", "", "", "", "", "", "");
+	$returnValue = array("", "", "", "", "", "", "", "");
 	// get the data submitted by the form
 	if(!empty($_GET["studentID"])) {
 		$returnValue[0] = trim(strtoupper($_GET["studentID"]));
 		if(!preg_match("/^[A-Z]{2}[0-9]{5}/", $returnValue[0])) {
 			// check if the student ID matches the pattern [A-Z]{2}[0-9]{5}
 			$returnValue[0] = "";
-			$returnValue[8] .= "Invalid student ID</br/>\n";
+			$returnValue[7] .= "Invalid student ID</br/>\n";
 		}
 	}
 	if(!empty($_GET["firstname"])) {
@@ -21,7 +21,7 @@ function studentInfo() {
 		if(!preg_match("/^[\w\s\d\.'\-]+$/", $returnValue[1])) {
 			// check if the firstname matches the pattern
 			$returnValue[1] = "";
-			$returnValue[8] .= "Invalid firstname</br/>\n";
+			$returnValue[7] .= "Invalid firstname</br/>\n";
 		}
 	}
 	if(!empty($_GET["lastname"])) {
@@ -30,7 +30,7 @@ function studentInfo() {
 		if(!preg_match("/^[\w\s\d\.'\-]+$/", $returnValue[2])) {
 			// check if the lastname matches the pattern
 			$returnValue[2] = "";
-			$returnValue[8] .= "Invalid lastname</br/>\n";
+			$returnValue[7] .= "Invalid lastname</br/>\n";
 		}
 	}
 	if(!empty($_GET["email"])) {
@@ -38,7 +38,7 @@ function studentInfo() {
 		if(!preg_match("/^[\w\d\-]+\.?[\w\d\-]*@[\w\d\.\-]+\.[\w\d]+/", $returnValue[3])) {
 			// check if the email matches the pattern
 			$returnValue[3] = "";
-			$returnValue[8] .= "Invalid email</br/>\n";
+			$returnValue[7] .= "Invalid email</br/>\n";
 		}
 	}
 	if(!empty($_GET["phone"])) {
@@ -46,15 +46,16 @@ function studentInfo() {
 		if(!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}/", $returnValue[4])) {
 			// check if the phone matches the pattern
 			$returnValue[4] = "";
-			$returnValue[8] .= "Invalid phone number</br/>\n";
+			$returnValue[7] .= "Invalid phone number</br/>\n";
 		}
 	}
 	if(!empty($_GET["course"])) {
 		$returnValue[5] = trim(strtoupper($_GET["course"]));
-		if(!preg_match("/^[A-Za-z]{3,4}[0-9]{3}[A-Za-z0-9]?$/", $returnValue[5])) {
+		//if(!preg_match("/^[A-Za-z]{3,4}[0-9]{3}[A-Za-z0-9]?$/", $returnValue[5])) {
+		if(!preg_match("/^([A-Za-z]{3,4}[0-9]{2,3}[A-Za-z]?\s?,?\s?)+$/", $returnValue[5])) {
 			// check if the course matches the pattern
 			$returnValue[5] = "";
-			$returnValue[8] .= "Invalid course ID</br/>\n";
+			$returnValue[7] .= "Invalid course ID</br/>\n";
 		}
 	}
 	if(!empty($_GET["pr"])) {
@@ -62,14 +63,7 @@ function studentInfo() {
 		if(!preg_match("/^[0-9]/", $returnValue[6])) {
 			// check if the process (pr) matches the pattern
 			$returnValue[6] = "";
-			$returnValue[8] .= "Invalid process ID</br/>\n";
-		}
-	}
-	if(!empty($_GET["massCourse"])) {
-		$returnValue[7] = trim(strtoupper($_GET["course"]));
-		if(!preg_match("/^([A-Za-z]{3,4}[0-9]{3}[A-Za-z0-9]?\s?,?\s?)+$/", $returnValue[7])) {
-			// check if the course matches the pattern
-			$returnValue[7] = "";
+			$returnValue[7] .= "Invalid process ID</br/>\n";
 		}
 	}
 	return $returnValue;
@@ -101,7 +95,7 @@ function compareRequirements($course, $takencourses, $studentID) {
 			foreach ($required as $value1) {
 				//echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $value1;
 				// check if the listed required courses are met
-				if(in_array($value1, $takencourses)) {
+				if(array_key_exists($value1, $takencourses)) {
 					// this is an OR statement so as long as 1 value is true, process it
 					$allowed = true;
 					//echo " found!";
@@ -159,8 +153,8 @@ function compareRequirements($course, $takencourses, $studentID) {
 function sessionInfo() {
 	// studentID, firstname, lastname, email, phone
 	$returnValue = array("", "", "", "", "");
-	// check if the session is more than 30 minutes
-	if(time() - $_SESSION["LAST_ACTIVITY"] > 1800) {
+	// check if the session's last activity is more than 15 minutes
+	if(time() - $_SESSION["LAST_ACTIVITY"] > 900) {
 		session_unset();
 		session_destroy();
 	}
@@ -178,10 +172,56 @@ function sessionInfo() {
 	return $returnValue;
 }
 function displayCourses($arrayList) {
-	echo "<div><table class=\"courseTable\" >";
-	foreach ($arrayList as $value) {
-		echo "<tr><td width=\"100\">TAKEN</td><td width=\"145\">" . $value . "</td><td><a href=\"./index.php?course=" . $value . "&pr=3\"><input type=\"button\" class=\"addIt\" value=\"REMOVE\" /></a></td></tr>\n";
+	// only create the table if there are elements in it
+	if(count($arrayList) > 0) {
+		echo "<div><table class=\"courseTable\" >";
+		// display each element as a row in the table
+		foreach ($arrayList as $value) {
+			echo "<tr><td>" . $value[0] . " - " . $value[1] . "</td><td><a href=\"./index.php?course=" . $value[0] . "&pr=3\"><input type=\"button\" class=\"addIt\" value=\"Delete\" title=\"Delete " . $value[0] . " from the list of courses taken.\" /></a></td></tr>\n";
+		}
+		echo "</table></div>";
 	}
-	echo "</table></div>";
+}
+function curl($url) {
+	// Defining the basic cURL function
+	$ch = curl_init();  // Initialising cURL
+	curl_setopt($ch, CURLOPT_URL, $url);    // Setting cURL's URL option with the $url variable passed into the function
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); // Setting cURL's option to return the webpage data
+	$data = curl_exec($ch); // Executing the cURL request and assigning the returned data to the $data variable
+	curl_close($ch);    // Closing cURL
+	return $data;   // Returning the data from the function
+}
+function scrapeStudentInfo($studentID) {
+	// firstname, lastname, email
+	$returnValue = array();
+	// get the scraped UMBC directory webpage
+	$scraped_website = curl("http://www.umbc.edu/search/directory/?search=" . $studentID);
+	// placeholders for specific student info
+	$placeholder1 = "<div class=\"name\" itemprop=\"name\">";
+	$placeholder2 = "</div>";
+	$placeholder3 = "<a itemprop=\"email\" href=\"mailto:";
+	$placeholder4 = "\">";
+	$index1 = strpos($scraped_website, $placeholder1);
+	// a record is found matching the studentID
+	if($index1 > 0) {
+		$index1 += strlen($placeholder1);
+		// get the end index of the student's name
+		$index2 = strpos($scraped_website, $placeholder2, $index1);
+		// substring the student's name from the scraped webpage
+		$temp = substr($scraped_website, $index1, $index2 - $index1);
+		// set firstname from the beginning of the string up to the last space
+		array_push($returnValue, substr($temp, 0, strrpos($temp, " ")));
+		// set the lastname from the index of the last space to the end
+		array_push($returnValue, substr($temp, strrpos($temp, " ") + 1));
+		// matching email address
+		$index3 = strpos($scraped_website, $placeholder3, $index1);
+		$index3 += strlen($placeholder3);
+		// get the end index of the email
+		$index4 = strpos($scraped_website, $placeholder4, $index3);
+		// set the email address from the substring of the scraped webpage
+		array_push($returnValue, substr($scraped_website, $index3, $index4 - $index3));
+		// echo $returnValue[0] . "," . $returnValue[1] . "," . $returnValue[2];
+	}
+	return $returnValue;
 }
 ?>

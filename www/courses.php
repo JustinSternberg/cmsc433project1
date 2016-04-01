@@ -13,17 +13,14 @@ if(!empty($_GET["course"])) {
 echo "[";
 // Course prefix must be at least 1 character
 if (strlen($course) > 0 ) {
-	$sql = "SELECT course, coursename, description, required FROM courses WHERE course like '" . $course . "%' ORDER BY course ASC LIMIT 12 ";
-	//$result = $conn->query($sql);
+	$sql = "SELECT course, coursename, description, requiredtext FROM courses WHERE course like '" . $course . "%' ORDER BY course ASC LIMIT 12 ";
 	$result = mysql_query($sql, $conn);
 	// get the results from the query
-	//$resultCount = $result->num_rows;
 	$resultCount = mysql_num_rows($result);
 	if ($resultCount > 0) {
 		// output data of each row
-		//while($row = $result->fetch_assoc()) {
 		while($row = mysql_fetch_assoc($result)) {
-			echo "[\"" . $row["course"] . "\",\"" . $row["coursename"] . "\",\"" . trim(preg_replace("/[\"]/","'", $row["description"])) . "\",\"" . trim(preg_replace("/[\"]/","'", $row["required"])) . "\"]";
+			echo "[\"" . $row["course"] . "\",\"" . $row["coursename"] . "\",\"" . trim(preg_replace("/[\"]/","'", $row["description"])) . "\",\"" . trim(preg_replace("/[\"]/","'", $row["requiredtext"])) . "\"]";
 			$resultCount--;
 			if($resultCount > 0) {
 				echo ",";
