@@ -66,7 +66,7 @@ if($validProcess == false) {
 // valid process - continue with the page request
 if($validProcess == true) {
 	// query the list of all the related courses for a computer science major
-	$sql3 = "SELECT cmscworksheet.course, cmscworksheet.priority, courses.coursename, courses.credit, courses.requiredtext, courses.description FROM cmscworksheet, courses WHERE cmscworksheet.course = courses.course ORDER BY cmscworksheet.course ASC";
+	$sql3 = "SELECT cmscworksheet.course, cmscworksheet.priority, courses.coursename, courses.credit, courses.requiredtext, courses.description FROM cmscworksheet, courses WHERE cmscworksheet.course = courses.course ORDER BY cmscworksheet.priority ASC, cmscworksheet.course ASC, courses.credit DESC ";
 	$result3 = mysql_query($sql3, $conn);
 	// get all the query results
 	if (mysql_num_rows($result3) > 0) {
@@ -169,14 +169,11 @@ if($validProcess == true) {
 	// get the counter for each CMSC worksheet priority category
 	foreach($cmscworksheet as $value3) {
 		// check if the specific course or the honor version of the course in CMSC worksheet is already taken
-		if(array_key_exists($value3[0], $takencourses) || array_key_exists($value3[0]."H", $takencourses)) {
+		if(exists($value3[0], $takencourses)) {
 			// check what priority value it is
 			$priority = $value3[1];
 			if($priority == 4) {
-				// Science courses -  Need 12 credits to fulfill the Science Courses
-				if($worksheetCounter[4] >= 12) {
-					continue;
-				}
+				// add all the Science course all to the array for science courses since the logic after this loop will handle it
 				$worksheetCounter[$priority] += $value3[3];
 			}
 			else {
@@ -197,7 +194,55 @@ if($validProcess == true) {
 			}
 		}
 	}
+	$whichSequence = 0;
+	$newCount = 0;
+	// courses that fulfills the science sequences
+	$sequence = array("BIOL100", "BIOL301", "BIOL141", "BIOL142", "CHEM101", "CHEM102", "PHYS121", "PHYS122");
+	if(exists($sequence[0], $worksheetCounterNames[4]) && exists($sequence[1], $worksheetCounterNames[4])) {
+		$whichSequence = 1; // BIOL100 and BIOL300 sequence
+		$newCount = 7;
+	}
+	elseif(exists($sequence[2], $worksheetCounterNames[4]) && exists($sequence[3], $worksheetCounterNames[4])) {
+		$whichSequence = 3; // BIOL141 and BIOL142 sequence
+		$newCount = 8;
+	}
+	elseif(exists($sequence[4], $worksheetCounterNames[4]) && exists($sequence[5], $worksheetCounterNames[4])) {
+		$whichSequence = 5; // CHEM101 and CHEM102 sequence
+		$newCount = 8;
+	}
+	elseif(exists($sequence[6], $worksheetCounterNames[4]) && exists($sequence[7], $worksheetCounterNames[4])) {
+		$whichSequence = 7; // PHYS121 and PHYS122 sequence
+		$newCount = 8;
+	}
+	$newScienceList = array();
+	// check to make sure the user have the science sequence done and move courses exceeding the 12 credit to the other courses taken
+	foreach($worksheetCounterNames[4] as $current_course) {
+		if($whichSequence > 0 && ($current_course[0] == $sequence[$whichSequence] || $current_course[0] == $sequence[$whichSequence - 1] )) {
+			// keep the courses that fulfill the science sequence requirement
+			$newScienceList[ $current_course[0] ] = $current_course;
+		}
+		else {
+			if($whichSequence > 0 && $newCount < 12) {
+				// sequence is met, so keep adding to the Science Course list until there's at least 12 credits
+				$newScienceList[ $current_course[0] ] = $current_course;
+				$newCount += $current_course[2]; // add the credit count to the total
+			}
+			elseif ($whichSequence == 0 && $newCount + $current_course[2] <= 9) {
+				// sequence is not met, allow up to 9 credits be added -- save room for 1 course that will meet the science sequence
+				$newScienceList[ $current_course[0] ] = $current_course;
+				$newCount += $current_course[2]; // add the credit count to the total
+			}
+			else {
+				// move the extra courses in the science category back to the takencourses array list 
+				$takencourses[ $current_course[0] ] = $current_course;
+			}
+		}
+	}
+	$worksheetCounterNames[4] = $newScienceList; // set the science category array list as the reworked list
+	if($newCount > 12) { $newCount = 12; } // for bar graph purposes -- max is 12 credit 
+	$worksheetCounter[4] = $newCount; // adjust / set the counter for science courses
 	// create a list of recommended courses to take
+	$generalElectives = array(); // priority zero (0) to end of recommended array list
 	foreach($cmscworksheet as $value) {
 		if(array_key_exists($value[0], $takencourses) || array_key_exists($value[0]."H", $takencourses)) {
 			// the course is already in the taken list - no need to recommend it
@@ -222,13 +267,23 @@ if($validProcess == true) {
 					if($worksheetCounter[4] >= 12) {
 						continue;
 					}
+					elseif($whichSequence == 0 && !in_array($value[0], $sequence) && $worksheetCounter[4] + $value[3] >= 9) {
+						// do not recommend science courses that will not fulfill science sequence if it exceeds 9 credits
+						continue;
+					}
 				}
 				// add the info for the course as an array: course, priority, coursename, credit, requiredtext, description
-				$recommended[$value[0]] = array($value[0], $value[1], $value[2], $value[3], $value[4], $value[5]);
+				if($value[1] > 0) {
+					$recommended[$value[0]] = array($value[0], $value[1], $value[2], $value[3], $value[4], $value[5]);
+				}
+				else {
+					// this is a workaround to add general electives at the end since they are searched first ORDERED by priority ASC
+					$generalElectives[$value[0]] = array($value[0], $value[1], $value[2], $value[3], $value[4], $value[5]);
+				}
 			}
-			
 		}
 	}
+	$recommended = array_merge($recommended, $generalElectives);
 	// take out the courses in takencourses that were categorized into the CMSC worksheet based on priority
 	// this is done separately to ensure consistency with science courses and technical electives
 	foreach ($worksheetCounterNames as $categories) {
@@ -352,6 +407,7 @@ else {
 			<div class="sidebar">
 				<div class="recommendedLabel">RECOMMENDED COURSES</div>
 				<?php
+				$priorityText = array("General Elective Course", "Required Computer Science Course", "Required Math Course", "Required Statistics Course", "Science Course", "Computer Science Elective Course", "Technical Elective Course");
 				foreach ($recommended as $val1) { ?>
 				<div class="divButton" id="<?php echo $val1[0]; ?>" title="Click to view more details on the course <?php echo $val1[0]; ?>." ><?php echo $val1[0] . " - " . $val1[2]; ?></div>
 					<div class="divOverlay" id="overlay<?php echo $val1[0]; ?>" >
@@ -363,7 +419,7 @@ else {
 							// display the course credit if it's included
 							echo " (Credits: " . $val1[3] . ")";
 						}
-						echo "</b><br/><br/>\n";
+						echo "<br/>[ " . $priorityText[ $val1[1] ] . " ]</b><br/><br/>\n";
 						// display the course description
 						echo $val1[5]. "<br/><br/>\n";
 						if(trim($val1[4]) != "") {

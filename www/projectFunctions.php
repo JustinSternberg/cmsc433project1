@@ -153,8 +153,8 @@ function compareRequirements($course, $takencourses, $studentID) {
 function sessionInfo() {
 	// studentID, firstname, lastname, email, phone
 	$returnValue = array("", "", "", "", "");
-	// check if the session's last activity is more than 15 minutes
-	if(time() - $_SESSION["LAST_ACTIVITY"] > 900) {
+	// check if the session's last activity is more than 30 minutes, and then invalidate it
+	if(time() - $_SESSION["LAST_ACTIVITY"] > 1800) {
 		session_unset();
 		session_destroy();
 	}
@@ -223,5 +223,16 @@ function scrapeStudentInfo($studentID) {
 		// echo $returnValue[0] . "," . $returnValue[1] . "," . $returnValue[2];
 	}
 	return $returnValue;
+}
+function exists($course, $arrayList) {
+	// simplifying array_key_exists to check for both normal course, honor versions, and Y version
+	if(array_key_exists($course, $arrayList) || array_key_exists($course."H", $arrayList) || array_key_exists($course."Y", $arrayList)) {
+		// the key is in the array
+		return true;
+	}
+	else {
+		// key does not exist in the array
+		return false;
+	}
 }
 ?>
