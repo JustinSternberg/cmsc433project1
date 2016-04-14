@@ -49,4 +49,12 @@ priority int(1) NOT NULL,
 PRIMARY KEY (id)
 )
 
+CREATE TABLE semesters
+(
+id int NOT NULL UNIQUE,
+semester varchar(255) NOT NULL,
+PRIMARY KEY (id)
+)
+
+
 
